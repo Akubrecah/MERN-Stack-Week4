@@ -8,8 +8,22 @@ const Post = require('../models/Post');
 // @desc    Get all blog posts
 router.get('/', async (req, res) => {
   try {
+    const { search, category } = req.query;
+    let query = {};
+
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { content: { $regex: search, $options: 'i' } },
+      ];
+    }
+
+    if (category) {
+      query.category = category;
+    }
+
     // We use .populate() to get category details and .sort() to get the newest posts first
-    const posts = await Post.find().populate('category').sort({ createdAt: -1 });
+    const posts = await Post.find(query).populate('category').sort({ createdAt: -1 });
     res.json(posts);
   } catch (err) {
     console.error(err.message);

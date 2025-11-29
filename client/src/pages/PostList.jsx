@@ -34,7 +34,10 @@ const PostList = () => {
 
   return (
     <div className="post-list-container">
-      <h1>Blog Posts</h1>
+      <div className="header-actions">
+        <h1>Blog Posts</h1>
+        <Link to="/posts/new" className="btn btn-primary">Create New Post</Link>
+      </div>
       {posts.length === 0 ? (
         <p>No posts found. Why not create one?</p>
       ) : (
