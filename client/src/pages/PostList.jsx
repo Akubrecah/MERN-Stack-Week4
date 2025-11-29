@@ -6,12 +6,29 @@ const PostList = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('');
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('/api/categories');
+        setCategories(response.data);
+      } catch (err) {
+        console.error('Failed to fetch categories', err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     const fetchPosts = async () => {
+      setLoading(true);
       try {
-        // The Vite proxy will forward this request to your Express backend
-        const response = await axios.get('/api/posts');
+        const response = await axios.get('/api/posts', {
+          params: { search, category },
+        });
         setPosts(response.data);
       } catch (err) {
         setError('Error fetching posts. Please try again later.');
@@ -21,8 +38,12 @@ const PostList = () => {
       }
     };
 
-    fetchPosts();
-  }, []); // Empty dependency array ensures this runs only once on mount
+    const delayDebounceFn = setTimeout(() => {
+      fetchPosts();
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [search, category]);
 
   if (loading) {
     return <div className="loading">Loading posts...</div>;
@@ -37,6 +58,28 @@ const PostList = () => {
       <div className="header-actions">
         <h1>Blog Posts</h1>
         <Link to="/posts/new" className="btn btn-primary">Create New Post</Link>
+      </div>
+      
+      <div className="filters">
+        <input
+          type="text"
+          placeholder="Search posts..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="search-input"
+        />
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="category-select"
+        >
+          <option value="">All Categories</option>
+          {categories.map((cat) => (
+            <option key={cat._id} value={cat._id}>
+              {cat.name}
+            </option>
+          ))}
+        </select>
       </div>
       {posts.length === 0 ? (
         <p>No posts found. Why not create one?</p>

@@ -68,6 +68,29 @@ body {
   color: #0275d8;
 }
 
+/* Filters */
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-input,
+.category-select {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.search-input {
+  flex: 1;
+}
+
+.category-select {
+  width: 200px;
+}
+
 /* Buttons */
 .btn {
   display: inline-block;
