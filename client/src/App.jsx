@@ -3,11 +3,13 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PostList from './pages/PostList';
 import SinglePost from './pages/SinglePost';
 import PostForm from './pages/PostForm';
+import Navbar from './components/Navbar';
 import './App.css';
 
 function App() {
   return (
     <Router>
+      <Navbar />
       <div className="container">
         <Routes>
           <Route path="/" element={<PostList />} />

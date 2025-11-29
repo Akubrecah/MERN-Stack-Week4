@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+import Hero from '../components/Hero';
+
 const PostList = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,47 +56,61 @@ const PostList = () => {
   }
 
   return (
-    <div className="post-list-container">
-      <div className="header-actions">
-        <h1>Blog Posts</h1>
-        <Link to="/posts/new" className="btn btn-primary">Create New Post</Link>
-      </div>
-      
-      <div className="filters">
-        <input
-          type="text"
-          placeholder="Search posts..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="search-input"
-        />
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="category-select"
-        >
-          <option value="">All Categories</option>
-          {categories.map((cat) => (
-            <option key={cat._id} value={cat._id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      {posts.length === 0 ? (
-        <p>No posts found. Why not create one?</p>
-      ) : (
-        <div className="post-list">
-          {posts.map((post) => (
-            <div key={post._id} className="post-card">
-              <h2><Link to={`/posts/${post._id}`}>{post.title}</Link></h2>
-              <p className="post-category">Category: {post.category?.name || 'Uncategorized'}</p>
-              <p>{post.content.substring(0, 150)}...</p>
-            </div>
-          ))}
+    <>
+      <Hero />
+      <div className="post-list-container" id="latest-posts">
+        <div className="section-header">
+          <h2>Latest Articles</h2>
+          <div className="filters">
+            <input
+              type="text"
+              placeholder="Search topics..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="search-input"
+            />
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="category-select"
+            >
+              <option value="">All Categories</option>
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      )}
-    </div>
+        
+        {posts.length === 0 ? (
+          <div className="no-posts">
+            <p>No posts found matching your criteria.</p>
+          </div>
+        ) : (
+          <div className="post-grid">
+            {posts.map((post) => (
+              <div key={post._id} className="post-card">
+                <div className="post-image-container">
+                  {post.featuredImage ? (
+                    <img src={post.featuredImage} alt={post.title} className="post-image" />
+                  ) : (
+                    <div className="post-image-placeholder"></div>
+                  )}
+                  <span className="post-category-badge">{post.category?.name || 'Uncategorized'}</span>
+                </div>
+                <div className="post-content-preview">
+                  <h3><Link to={`/posts/${post._id}`}>{post.title}</Link></h3>
+                  <p>{post.content.substring(0, 100)}...</p>
+                  <Link to={`/posts/${post._id}`} className="read-more">Read More &rarr;</Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

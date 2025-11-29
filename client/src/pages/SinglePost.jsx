@@ -46,24 +46,35 @@ const SinglePost = () => {
   }
 
   return (
-    <div className="single-post-container">
-      <Link to="/" className="back-link">&larr; Back to Posts</Link>
-      {post ? (
-        <article>
-          <div className="post-header">
-            <h1>{post.title}</h1>
-            <div className="post-actions">
-              <Link to={`/posts/${post._id}/edit`} className="btn btn-secondary">Edit</Link>
-              <button onClick={handleDelete} className="btn btn-danger">Delete</button>
+  return (
+    <div className="single-post-page">
+      {post.featuredImage && (
+        <div className="post-hero-image" style={{ backgroundImage: `url(${post.featuredImage})` }}>
+          <div className="post-hero-overlay"></div>
+        </div>
+      )}
+      
+      <div className="single-post-container">
+        <Link to="/" className="back-link">&larr; Back to Articles</Link>
+        
+        <article className="post-article">
+          <header className="article-header">
+            <span className="post-category-badge">{post.category?.name || 'Uncategorized'}</span>
+            <h1 className="article-title">{post.title}</h1>
+            <div className="article-meta">
+              <span className="post-date">{new Date(post.createdAt).toLocaleDateString()}</span>
+              {/* Add author if available */}
             </div>
-          </div>
-          <p className="post-category">Category: {post.category?.name || 'Uncategorized'}</p>
-          {post.featuredImage && <img src={post.featuredImage} alt={post.title} className="featured-image" />}
+            
+            <div className="post-actions">
+              <Link to={`/posts/${post._id}/edit`} className="btn btn-secondary btn-sm">Edit Post</Link>
+              <button onClick={handleDelete} className="btn btn-danger btn-sm">Delete</button>
+            </div>
+          </header>
+
           <div className="post-content" dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br />') }} />
         </article>
-      ) : (
-        <p>Post not found.</p>
-      )}
+      </div>
     </div>
   );
 };
